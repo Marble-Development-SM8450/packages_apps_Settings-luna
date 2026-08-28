@@ -403,6 +403,16 @@ public abstract class SettingsPreferenceFragment extends InstrumentedPreferenceF
     }
 
     @Override
+    public RecyclerView onCreateRecyclerView(LayoutInflater inflater, ViewGroup parent,
+            Bundle savedInstanceState) {
+        RecyclerView recyclerView = super.onCreateRecyclerView(inflater, parent,
+                savedInstanceState);
+        recyclerView.setEdgeEffectFactory(
+                new org.lunaris.settings.widget.SettingsSpringEdgeEffectFactory());
+        return recyclerView;
+    }
+
+    @Override
     protected RecyclerView.Adapter onCreateAdapter(PreferenceScreen preferenceScreen) {
         final Bundle arguments = getArguments();
         String key = arguments == null ? null : arguments.getString(EXTRA_FRAGMENT_ARG_KEY);
