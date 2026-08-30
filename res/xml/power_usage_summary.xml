@@ -21,17 +21,16 @@
     android:title="@string/power_usage_summary_title"
     settings:keywords="@string/keywords_battery">
 
-    <com.android.settingslib.widget.UsageProgressBarPreference
-        android:key="battery_header"
-        android:title="@string/summary_placeholder"
-        android:selectable="false"
-        android:paddingBottom="0px"
-        settings:controller="com.android.settings.fuelgauge.BatteryHeaderPreferenceController" />
-
     <com.android.settings.fuelgauge.BatteryHeaderTextPreference
         android:key="battery_header_text"
         android:selectable="false"
         settings:controller="com.android.settings.fuelgauge.BatteryHeaderTextPreferenceController" />
+
+    <com.android.settingslib.widget.LayoutPreference
+        android:key="battery_hero_card"
+        android:layout="@layout/battery_hero_card"
+        android:selectable="false"
+        settings:controller="com.android.settings.fuelgauge.HyperBatteryHeaderPreferenceController" />
 
     <com.android.settingslib.widget.LayoutPreference
         android:key="battery_help_message"

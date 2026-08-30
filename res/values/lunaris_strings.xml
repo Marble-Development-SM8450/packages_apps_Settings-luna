@@ -281,4 +281,11 @@
     <string name="one_time_data_limit_when_exceeded">When exceeded</string>
     <string name="one_time_data_limit_turn_off_notify">Turn off and notify</string>
     <string name="one_time_data_limit_notify_only">Notify only</string>
+
+    <!-- battery card -->
+    <string name="battery_hero_status_full">Charged</string>
+    <string name="battery_hero_status_charging">Charging</string>
+    <string name="battery_usage_chart_now_label">Now</string>
+    <string name="battery_usage_chart_title">Battery level since last full charge</string>
+
 </resources>

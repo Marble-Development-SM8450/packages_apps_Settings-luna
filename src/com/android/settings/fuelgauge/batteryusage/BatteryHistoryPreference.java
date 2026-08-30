@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.android.settings.fuelgauge.batteryusage;
 
 import android.content.Context;
@@ -24,15 +23,18 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceViewHolder;
 
 import com.android.settings.R;
-import com.android.settings.fuelgauge.BatteryUtils;
 
-/** Custom preference for displaying the battery level as chart graph. */
+import java.util.ArrayList;
+import java.util.List;
+
+/** A preference that hosts the single continuous battery level chart graph. */
 public class BatteryHistoryPreference extends Preference {
-    private static final String TAG = "BatteryHistoryPreference";
 
-    private BatteryChartView mDailyChartView;
-    private BatteryChartView mHourlyChartView;
-    private BatteryChartPreferenceController mChartPreferenceController;
+    private HyperBatteryChartView mHyperChartView;
+    private TextView mChartSummaryTextView;
+
+    private List<Integer> mPendingLevels;
+    private List<Long> mPendingTimestamps;
 
     public BatteryHistoryPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -40,25 +42,26 @@ public class BatteryHistoryPreference extends Preference {
         setSelectable(false);
     }
 
-    void setChartPreferenceController(BatteryChartPreferenceController controller) {
-        mChartPreferenceController = controller;
-        if (mDailyChartView != null && mHourlyChartView != null) {
-            mChartPreferenceController.setBatteryChartView(mDailyChartView, mHourlyChartView);
+    /** Sets the chart data. Safe to call before the view is bound. */
+    void setChartData(List<Integer> levels, List<Long> timestamps) {
+        mPendingLevels = levels;
+        mPendingTimestamps = timestamps;
+        if (mHyperChartView != null) {
+            mHyperChartView.setData(levels, timestamps, new ArrayList<>());
         }
+    }
+
+    TextView getChartSummaryTextView() {
+        return mChartSummaryTextView;
     }
 
     @Override
     public void onBindViewHolder(PreferenceViewHolder view) {
         super.onBindViewHolder(view);
-        final long startTime = System.currentTimeMillis();
-        final TextView companionTextView = (TextView) view.findViewById(R.id.companion_text);
-        mDailyChartView = (BatteryChartView) view.findViewById(R.id.daily_battery_chart);
-        mDailyChartView.setCompanionTextView(companionTextView);
-        mHourlyChartView = (BatteryChartView) view.findViewById(R.id.hourly_battery_chart);
-        mHourlyChartView.setCompanionTextView(companionTextView);
-        if (mChartPreferenceController != null) {
-            mChartPreferenceController.setBatteryChartView(mDailyChartView, mHourlyChartView);
+        mChartSummaryTextView = (TextView) view.findViewById(R.id.chart_summary);
+        mHyperChartView = (HyperBatteryChartView) view.findViewById(R.id.hyper_battery_chart);
+        if (mPendingLevels != null && mPendingTimestamps != null) {
+            mHyperChartView.setData(mPendingLevels, mPendingTimestamps, new ArrayList<>());
         }
-        BatteryUtils.logRuntime(TAG, "onBindViewHolder", startTime);
     }
 }

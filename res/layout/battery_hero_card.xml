@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/battery_hero_card_root"
+    android:background="@drawable/battery_hero_card_background"
+    android:clipToOutline="true"
+    android:outlineProvider="background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="24dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+            <TextView
+                android:id="@+id/battery_hero_big_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="40sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:text="100" />
+
+            <TextView
+                android:id="@+id/battery_hero_big_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="6dp"
+                android:textSize="18sp"
+                android:textColor="@android:color/white"
+                android:text="%" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/battery_hero_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="14sp"
+            android:textColor="#DDFFFFFF"
+            android:text="Charged" />
+
+        <ProgressBar
+            android:id="@+id/battery_hero_progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_marginTop="16dp"
+            android:max="100"
+            android:progress="100"
+            android:progressTint="@android:color/white"
+            android:progressBackgroundTint="#33FFFFFF" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/battery_hero_shimmer"
+        android:layout_width="120dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/battery_hero_shimmer_gradient"
+        android:visibility="gone" />
+
+</FrameLayout>

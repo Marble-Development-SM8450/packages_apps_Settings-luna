@@ -219,8 +219,14 @@ public class PowerUsageAdvanced extends PowerUsageBase {
             return;
         }
         mBatteryLevelData = Optional.ofNullable(batteryLevelData);
-        if (mBatteryChartPreferenceController != null) {
-            mBatteryChartPreferenceController.onBatteryLevelDataUpdate(batteryLevelData);
+        if (mHistPref != null && batteryLevelData != null) {
+            java.util.List<BatteryLevelData.PeriodBatteryLevelData> hourlyPerDay =
+                    batteryLevelData.getHourlyBatteryLevelsPerDay();
+            if (hourlyPerDay != null && !hourlyPerDay.isEmpty()) {
+                BatteryLevelData.PeriodBatteryLevelData latestDay =
+                        hourlyPerDay.get(hourlyPerDay.size() - 1);
+                mHistPref.setChartData(latestDay.getLevels(), latestDay.getTimestamps());
+            }
             Log.d(
                     TAG,
                     String.format(
@@ -422,9 +428,9 @@ public class PowerUsageAdvanced extends PowerUsageBase {
     }
 
     private void setBatteryChartPreferenceController() {
-        if (mHistPref != null && mBatteryChartPreferenceController != null) {
-            mHistPref.setChartPreferenceController(mBatteryChartPreferenceController);
-        }
+        // No-op: BatteryHistoryPreference now owns its own chart view directly,
+        // no longer coupled to BatteryChartPreferenceController's daily/hourly
+        // trapezoid model.
     }
 
     private boolean isBatteryUsageMapNullOrEmpty() {

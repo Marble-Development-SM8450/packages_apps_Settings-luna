@@ -305,4 +305,9 @@
 
    <color name="primary_text_disable_only_material_light">@*android:color/primary_text_disable_only_material_light</color>
 
+    <!-- battery -->
+    <color name="battery_hero_card_default_color">#FF3D5AFE</color>
+    <color name="battery_hero_card_low_color">#FFB33A3A</color>
+    <color name="battery_hero_card_charging_color">#FF2E8B57</color>
+
 </resources>

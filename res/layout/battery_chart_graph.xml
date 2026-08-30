@@ -37,36 +37,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <com.android.settings.fuelgauge.batteryusage.BatteryChartView
-            android:id="@+id/daily_battery_chart"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/chartview_layout_height"
-            android:layout_marginBottom="16dp"
-            android:visibility="gone"
-            android:contentDescription="@string/daily_battery_usage_chart"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            settings:textColor="?android:attr/textColorSecondary" />
 
-        <com.android.settings.fuelgauge.batteryusage.BatteryChartView
-            android:id="@+id/hourly_battery_chart"
+        <com.android.settings.fuelgauge.batteryusage.HyperBatteryChartView
+            android:id="@+id/hyper_battery_chart"
             android:layout_width="match_parent"
             android:layout_height="@dimen/chartview_layout_height"
-            android:layout_marginBottom="16dp"
-            android:visibility="gone"
-            android:alpha="0"
-            android:contentDescription="@string/hourly_battery_usage_chart"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            settings:textColor="?android:attr/textColorSecondary" />
+            android:layout_marginBottom="16dp" />
+
     </LinearLayout>
-
-    <!-- Use non-scalable text size from text_size_small_material -->
-    <TextView
-        android:id="@+id/companion_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="?android:attr/textColorSecondary"
-        android:textSize="14dp" />
 
 </LinearLayout>

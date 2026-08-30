@@ -300,6 +300,11 @@ public class PowerUsageSummary extends PowerUsageBase
 
         mHelpPreference = findPreference(KEY_BATTERY_ERROR);
         mHelpPreference.setVisible(false);
+
+        Preference batteryHeaderTextPreference = findPreference("battery_header_text");
+        if (batteryHeaderTextPreference != null) {
+            batteryHeaderTextPreference.setVisible(false);
+        }
     }
 
     @VisibleForTesting
