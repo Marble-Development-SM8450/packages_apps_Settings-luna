@@ -75,6 +75,7 @@ public class PowerUsageAdvanced extends PowerUsageBase {
 
     private boolean mIsChartDataLoaded = false;
     private long mStartTimestamp;
+    private long mUsedSinceChargeTimeMs;
     private Map<Integer, Map<Integer, BatteryDiffData>> mBatteryUsageMap;
 
     private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
@@ -219,13 +220,21 @@ public class PowerUsageAdvanced extends PowerUsageBase {
             return;
         }
         mBatteryLevelData = Optional.ofNullable(batteryLevelData);
+        if (mBatteryChartPreferenceController != null) {
+            mBatteryChartPreferenceController.onBatteryLevelDataUpdate(batteryLevelData);
+        }
         if (mHistPref != null && batteryLevelData != null) {
-            java.util.List<BatteryLevelData.PeriodBatteryLevelData> hourlyPerDay =
+            List<BatteryLevelData.PeriodBatteryLevelData> hourlyPerDay =
                     batteryLevelData.getHourlyBatteryLevelsPerDay();
             if (hourlyPerDay != null && !hourlyPerDay.isEmpty()) {
                 BatteryLevelData.PeriodBatteryLevelData latestDay =
                         hourlyPerDay.get(hourlyPerDay.size() - 1);
                 mHistPref.setChartData(latestDay.getLevels(), latestDay.getTimestamps());
+                List<Long> timestamps = latestDay.getTimestamps();
+                if (timestamps.size() >= 2) {
+                    mUsedSinceChargeTimeMs =
+                            timestamps.get(timestamps.size() - 1) - timestamps.get(0);
+                }
             }
             Log.d(
                     TAG,
@@ -280,6 +289,7 @@ public class PowerUsageAdvanced extends PowerUsageBase {
         final BatteryDiffData slotUsageData = mBatteryUsageMap.get(dailyIndex).get(hourlyIndex);
         mScreenOnTimeController.handleScreenOnTimeUpdated(
                 slotUsageData != null ? slotUsageData.getScreenOnTime() : 0L,
+                mUsedSinceChargeTimeMs,
                 slotInformation,
                 accessibilitySlotInformation);
         // Hide card tips if the related highlight slot was clicked.
@@ -428,9 +438,9 @@ public class PowerUsageAdvanced extends PowerUsageBase {
     }
 
     private void setBatteryChartPreferenceController() {
-        // No-op: BatteryHistoryPreference now owns its own chart view directly,
-        // no longer coupled to BatteryChartPreferenceController's daily/hourly
-        // trapezoid model.
+        // No-op: BatteryHistoryPreference now owns its own chart view directly via
+        // setChartData(), no longer coupled to BatteryChartPreferenceController's
+        // daily/hourly trapezoid model.
     }
 
     private boolean isBatteryUsageMapNullOrEmpty() {

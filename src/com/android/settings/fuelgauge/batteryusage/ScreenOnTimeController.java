@@ -46,7 +46,7 @@ public class ScreenOnTimeController extends BasePreferenceController {
 
     @VisibleForTesting Context mPrefContext;
     @VisibleForTesting PreferenceCategory mRootPreference;
-    @VisibleForTesting TextViewPreference mScreenOnTimeTextPreference;
+    @VisibleForTesting ScreenOnTimeBoxesPreference mScreenOnTimeTextPreference;
     @VisibleForTesting String mScreenTimeCategoryLastFullChargeText;
 
     public ScreenOnTimeController(Context context) {
@@ -69,14 +69,17 @@ public class ScreenOnTimeController extends BasePreferenceController {
     }
 
     void handleScreenOnTimeUpdated(
-            Long screenOnTime, String slotTimestamp, String accessibilitySlotTimestamp) {
+            Long screenOnTime,
+            Long usedSinceChargeTime,
+            String slotTimestamp,
+            String accessibilitySlotTimestamp) {
         if (screenOnTime == null || screenOnTime <= 0) {
             mRootPreference.setVisible(false);
             mScreenOnTimeTextPreference.setVisible(false);
             return;
         }
         showCategoryTitle(slotTimestamp, accessibilitySlotTimestamp);
-        showScreenOnTimeText(screenOnTime);
+        showScreenOnTimeText(screenOnTime, usedSinceChargeTime);
     }
 
     @VisibleForTesting
@@ -96,15 +99,24 @@ public class ScreenOnTimeController extends BasePreferenceController {
     }
 
     @VisibleForTesting
-    void showScreenOnTimeText(Long screenOnTime) {
-        final CharSequence timeSequence =
+    void showScreenOnTimeText(Long screenOnTime, Long usedSinceChargeTime) {
+        final CharSequence screenOnSequence =
                 BatteryUtils.formatElapsedTimeWithoutComma(
                         mPrefContext,
                         (double) screenOnTime,
                         /* withSeconds= */ false,
                         /* collapseTimeUnit= */ false);
-        mScreenOnTimeTextPreference.setText(
-                enlargeFontOfNumberIfNeeded(mPrefContext, timeSequence));
+        final CharSequence usedSequence =
+                (usedSinceChargeTime == null || usedSinceChargeTime <= 0)
+                        ? screenOnSequence
+                        : BatteryUtils.formatElapsedTimeWithoutComma(
+                                mPrefContext,
+                                (double) usedSinceChargeTime,
+                                /* withSeconds= */ false,
+                                /* collapseTimeUnit= */ false);
+        mScreenOnTimeTextPreference.setTimes(
+                enlargeFontOfNumberIfNeeded(mPrefContext, usedSequence),
+                enlargeFontOfNumberIfNeeded(mPrefContext, screenOnSequence));
         mScreenOnTimeTextPreference.setVisible(true);
     }
 
@@ -120,7 +132,7 @@ public class ScreenOnTimeController extends BasePreferenceController {
         }
 
         final SpannableString spannableText = new SpannableString(text);
-        final int enlargeFontSizeDp = SettingsThemeHelper.isExpressiveTheme(context) ? 64 : 36;
+        final int enlargeFontSizeDp = SettingsThemeHelper.isExpressiveTheme(context) ? 22 : 20;
         final Matcher matcher = NUMBER_PATTERN.matcher(text);
         while (matcher.find()) {
             spannableText.setSpan(

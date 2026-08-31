@@ -287,5 +287,6 @@
     <string name="battery_hero_status_charging">Charging</string>
     <string name="battery_usage_chart_now_label">Now</string>
     <string name="battery_usage_chart_title">Battery level since last full charge</string>
-
+    <string name="used_since_last_charge_label">Used since last charge</string>
+    <string name="screen_on_since_last_charge_label">Screen on since last charge</string>
 </resources>
