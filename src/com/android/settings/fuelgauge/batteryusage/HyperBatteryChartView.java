@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 The Lunaris Project
+ * Copyright (C) 2025-2026 The ASCP Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -24,6 +24,7 @@ import android.graphics.Path;
 import android.graphics.Shader;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -60,6 +61,10 @@ public class HyperBatteryChartView extends View {
     }
 
     private void init() {
+        int secondaryTextColor = resolveColor(android.R.attr.textColorSecondary,
+                Color.argb(150, 255, 255, 255));
+        int gridColor = withAlpha(secondaryTextColor, 60);
+
         mLinePaint.setAntiAlias(true);
         mLinePaint.setStyle(Paint.Style.STROKE);
         mLinePaint.setStrokeWidth(dp(2.5f));
@@ -73,16 +78,16 @@ public class HyperBatteryChartView extends View {
         mGridPaint.setAntiAlias(true);
         mGridPaint.setStyle(Paint.Style.STROKE);
         mGridPaint.setStrokeWidth(dp(1f));
-        mGridPaint.setColor(Color.argb(35, 255, 255, 255));
+        mGridPaint.setColor(gridColor);
         mGridPaint.setPathEffect(new DashPathEffect(new float[]{dp(3f), dp(4f)}, 0));
 
         mLabelPaint.setAntiAlias(true);
         mLabelPaint.setTextSize(sp(12f));
-        mLabelPaint.setColor(Color.argb(150, 255, 255, 255));
+        mLabelPaint.setColor(secondaryTextColor);
 
         mYAxisLabelPaint.setAntiAlias(true);
         mYAxisLabelPaint.setTextSize(sp(11f));
-        mYAxisLabelPaint.setColor(Color.argb(130, 255, 255, 255));
+        mYAxisLabelPaint.setColor(secondaryTextColor);
         mYAxisLabelPaint.setTextAlign(Paint.Align.RIGHT);
 
         mDotPaint.setAntiAlias(true);
@@ -91,6 +96,26 @@ public class HyperBatteryChartView extends View {
         mDotRingPaint.setAntiAlias(true);
         mDotRingPaint.setStyle(Paint.Style.FILL);
         mDotRingPaint.setColor(Color.WHITE);
+    }
+
+    private int resolveColor(int attr, int fallback) {
+        TypedValue tv = new TypedValue();
+        if (getContext().getTheme().resolveAttribute(attr, tv, true)) {
+            if (tv.type >= TypedValue.TYPE_FIRST_COLOR_INT
+                    && tv.type <= TypedValue.TYPE_LAST_COLOR_INT) {
+                return tv.data;
+            }
+            try {
+                return getContext().getColor(tv.resourceId);
+            } catch (Exception e) {
+                return fallback;
+            }
+        }
+        return fallback;
+    }
+
+    private int withAlpha(int color, int alpha) {
+        return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color));
     }
 
     /** Sets the chart data. levels: 0-100 battery percentage per sample. */
