@@ -66,7 +66,7 @@ public class HyperBatteryHeaderPreferenceController extends BasePreferenceContro
             if (mShimmerView == null) {
                 return;
             }
-            mShimmerView.setHotspot(
+            mShimmerView.drawableHotspotChanged(
                     mShimmerView.getWidth() / 2f, mShimmerView.getHeight() / 2f);
             mShimmerView.setPressed(true);
             mHandler.postDelayed(() -> {
