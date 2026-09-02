@@ -115,5 +115,8 @@
 
     <!-- Keyboard a11y input dialog -->
     <color name="input_dialog_slider_progress">@android:color/system_on_primary_container_dark</color>
+
+    <!-- battery -->
+    <color name="screen_on_time_box_bg">#242424</color>
 </resources>
 

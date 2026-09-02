@@ -16,15 +16,13 @@ package com.android.settings.fuelgauge;
 
 import static com.android.settings.fuelgauge.BatteryBroadcastReceiver.BatteryUpdateType.BATTERY_NOT_PRESENT;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.BatteryManager;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -47,8 +45,8 @@ public class HyperBatteryHeaderPreferenceController extends BasePreferenceContro
 
     private static final int BATTERY_MAX_LEVEL = 100;
     private static final int LOW_BATTERY_THRESHOLD = 20;
-    private static final long SHIMMER_DURATION_MS = 1800L;
-    private static final int SHIMMER_WIDTH_DP = 120;
+    private static final long PULSE_HOLD_MS = 900L;
+    private static final long PULSE_GAP_MS = 700L;
 
     @Nullable @VisibleForTesting BatteryBroadcastReceiver mBatteryBroadcastReceiver;
     @Nullable private LayoutPreference mLayoutPreference;
@@ -57,9 +55,28 @@ public class HyperBatteryHeaderPreferenceController extends BasePreferenceContro
     @Nullable private TextView mBigNumber;
     @Nullable private TextView mSubtitle;
     @Nullable private ProgressBar mProgress;
-    @Nullable private ValueAnimator mShimmerAnimator;
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
     private boolean mIsStarted;
     private boolean mWantsShimmer;
+    private boolean mIsPulsing;
+
+    private final Runnable mPulseRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mShimmerView == null) {
+                return;
+            }
+            mShimmerView.setHotspot(
+                    mShimmerView.getWidth() / 2f, mShimmerView.getHeight() / 2f);
+            mShimmerView.setPressed(true);
+            mHandler.postDelayed(() -> {
+                if (mShimmerView != null) {
+                    mShimmerView.setPressed(false);
+                }
+            }, PULSE_HOLD_MS);
+            mHandler.postDelayed(mPulseRunnable, PULSE_HOLD_MS + PULSE_GAP_MS);
+        }
+    };
 
     public HyperBatteryHeaderPreferenceController(Context context, String key) {
         super(context, key);
@@ -174,45 +191,19 @@ public class HyperBatteryHeaderPreferenceController extends BasePreferenceContro
     }
 
     private void startShimmer() {
-        if (mShimmerView == null || mCardRoot == null || mShimmerAnimator != null) {
+        if (mShimmerView == null || mIsPulsing) {
             return;
         }
+        mIsPulsing = true;
         mShimmerView.setVisibility(View.VISIBLE);
-        final float density = mContext.getResources().getDisplayMetrics().density;
-        final float shimmerWidthPx = SHIMMER_WIDTH_DP * density;
-
-        mShimmerAnimator = ValueAnimator.ofFloat(0f, 1f);
-        mShimmerAnimator.setDuration(SHIMMER_DURATION_MS);
-        mShimmerAnimator.setInterpolator(new LinearInterpolator());
-        mShimmerAnimator.setRepeatCount(ValueAnimator.INFINITE);
-        mShimmerAnimator.setRepeatMode(ValueAnimator.RESTART);
-        mShimmerAnimator.addUpdateListener(animation -> {
-            if (mShimmerView == null || mCardRoot == null) {
-                return;
-            }
-            float fraction = (float) animation.getAnimatedValue();
-            float cardWidth = mCardRoot.getWidth();
-            float startX = -shimmerWidthPx;
-            float endX = cardWidth + shimmerWidthPx;
-            mShimmerView.setTranslationX(startX + fraction * (endX - startX));
-        });
-        mShimmerAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                if (mShimmerView != null) {
-                    mShimmerView.setVisibility(View.GONE);
-                }
-            }
-        });
-        mShimmerAnimator.start();
+        mHandler.post(mPulseRunnable);
     }
 
     private void stopShimmer() {
-        if (mShimmerAnimator != null) {
-            mShimmerAnimator.cancel();
-            mShimmerAnimator = null;
-        }
+        mIsPulsing = false;
+        mHandler.removeCallbacks(mPulseRunnable);
         if (mShimmerView != null) {
+            mShimmerView.setPressed(false);
             mShimmerView.setVisibility(View.GONE);
         }
     }

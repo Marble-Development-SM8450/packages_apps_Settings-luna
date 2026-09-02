@@ -309,5 +309,6 @@
     <color name="battery_hero_card_default_color">#FF3D5AFE</color>
     <color name="battery_hero_card_low_color">#FFB33A3A</color>
     <color name="battery_hero_card_charging_color">#FF2E8B57</color>
+    <color name="screen_on_time_box_bg">#F0EEE9</color>
 
 </resources>

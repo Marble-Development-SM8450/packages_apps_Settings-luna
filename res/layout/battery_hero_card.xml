@@ -68,9 +68,9 @@
 
     <View
         android:id="@+id/battery_hero_shimmer"
-        android:layout_width="120dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/battery_hero_shimmer_gradient"
+        android:background="@drawable/battery_hero_ripple"
         android:visibility="gone" />
 
 </FrameLayout>
