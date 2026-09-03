@@ -84,17 +84,7 @@ public class ScreenOnTimeController extends BasePreferenceController {
 
     @VisibleForTesting
     void showCategoryTitle(String slotTimestamp, String accessibilitySlotTimestamp) {
-        final String displayTitle =
-                slotTimestamp == null
-                        ? mScreenTimeCategoryLastFullChargeText
-                        : mPrefContext.getString(
-                                R.string.screen_time_category_for_slot, slotTimestamp);
-        final String accessibilityTitle =
-                accessibilitySlotTimestamp == null
-                        ? mScreenTimeCategoryLastFullChargeText
-                        : mPrefContext.getString(
-                                R.string.screen_time_category_for_slot, accessibilitySlotTimestamp);
-        mRootPreference.setTitle(Utils.createAccessibleSequence(displayTitle, accessibilityTitle));
+        mRootPreference.setTitle(null);
         mRootPreference.setVisible(true);
     }
 

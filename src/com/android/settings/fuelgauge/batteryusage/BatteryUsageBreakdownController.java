@@ -314,19 +314,7 @@ public class BatteryUsageBreakdownController extends BasePreferenceController
     }
 
     private void showCategoryTitle(String slotTimestamp, String accessibilitySlotTimestamp) {
-        final String displayTitle =
-                slotTimestamp == null
-                        ? mBatteryUsageBreakdownTitleLastFullChargeText
-                        : mPrefContext.getString(
-                                R.string.battery_usage_breakdown_title_for_slot, slotTimestamp);
-        final String accessibilityTitle =
-                accessibilitySlotTimestamp == null
-                        ? mBatteryUsageBreakdownTitleLastFullChargeText
-                        : mPrefContext.getString(
-                                R.string.battery_usage_breakdown_title_for_slot,
-                                accessibilitySlotTimestamp);
-        mRootPreferenceGroup.setTitle(
-                Utils.createAccessibleSequence(displayTitle, accessibilityTitle));
+        mRootPreferenceGroup.setTitle(null);
         mRootPreferenceGroup.setVisible(true);
     }
 
